@@ -7,7 +7,9 @@ authors = [
     { name = "yutiime", email = "y.demirel467@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "duckdb>=1.5.5",
+]
 
 [project.scripts]
 swiss-rail-punctuality = "swiss_rail_punctuality:main"

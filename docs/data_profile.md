@@ -17,3 +17,7 @@
 - Le premier arrêt n'a pas d'arrivée, sauf chez TPG et TL 
 - Doublons d'arrêts dans certaines courses 
 
+- Le volume varie fortement selon le jour de la semaine dimanche 20/09 = 1,7 M de lignes, lundi 21/09 = 2,5 M. Un contrôle de volume devra comparer au même jour de la semaine précédente. 
+-Le site bloque le User-Agent par défaut de Python (erreur 403). Le script s'identifie avec son propre nom 
+
+

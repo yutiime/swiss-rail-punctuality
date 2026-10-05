@@ -1,2 +1,2 @@
-def main() -> None:
-    print("Hello from swiss-rail-punctuality!")
+"""Pipeline de ponctualité des transports publics suisses."""
+

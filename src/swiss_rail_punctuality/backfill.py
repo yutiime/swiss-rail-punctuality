@@ -19,7 +19,7 @@ def backfill(start: str, end: str) -> None:
             to_parquet(d)
             csv_path.unlink()
             ok += 1
-        except Exception as e:
+        except Exception as e: # noqa: BLE001 - un backfill continue malgré l'échec d'un jour 
             failed.append((d, e))
 
         day += timedelta(days=1)

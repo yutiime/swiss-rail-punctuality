@@ -32,7 +32,7 @@ def download_day(day: str) -> Path:
     match = re.search(rf'https[^"]*{day}_istdaten\.csv', html)
 
     if match is None:
-        raise ValueError(f"Pas de fichier pour {day}")
+        raise ValueError(f"No file found for {day}")
     url = match.group(0)
 
     RAW_DIR.mkdir(parents=True, exist_ok=True)
@@ -44,7 +44,7 @@ def download_day(day: str) -> Path:
         header = f.readline()
     if "BETRIEBSTAG" not in header:
         tmp.unlink()
-        raise ValueError(f"Contenu inattendu pour {day} : {header[:80]}")
+        raise ValueError(f"Unexpected content for {day}: {header[:80]}")
     tmp.rename(dest)
 
     return dest

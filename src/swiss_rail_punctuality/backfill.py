@@ -19,16 +19,16 @@ def backfill(start: str, end: str) -> None:
             to_parquet(d)
             csv_path.unlink()
             ok += 1
-        except Exception as e: # noqa: BLE001 - un backfill continue malgré l'échec d'un jour 
+        except Exception as e: # noqa: BLE001 - continue the backfill even if one day fails
             failed.append((d, e))
 
         day += timedelta(days=1)
 
-    print(f"\n{ok} jour(s) traité(s)")
+    print(f"\n{ok} day(s) processed")
     if failed:
-        print(f"{len(failed)} échec(s) :")
+        print(f"{len(failed)} failure(s):")
         for d, e in failed:
-            print(f"  {d} : {e}")
+            print(f"  {d}: {e}")
 
 
 if __name__ == "__main__":

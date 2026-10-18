@@ -1,2 +1,2 @@
-"""Pipeline de ponctualité des transports publics suisses."""
+"""Swiss public transport punctuality pipeline."""
 

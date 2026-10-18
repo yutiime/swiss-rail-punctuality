@@ -1,23 +1,23 @@
-# Mesures
+# Benchmarks
 
-## Conversion CSV → Parquet 
-| Format | Taille | Lignes |
+## CSV to Parquet conversion
+| Format | Size | Rows |
 | --- | --- | --- |
-| CSV | 608 Mo | 2 516 573 |
-| Parquet | 43 Mo | 2 516 573 |
+| CSV | 608 MB | 2,516,573 |
+| Parquet | 43 MB | 2,516,573 |
 
-Facteur de compression : 14x. Estimation pour un an : 220 Go en CSV, 16 Go en Parquet.
+Compression ratio: 14x. Estimated annual storage: 220 GB as CSV, 16 GB as Parquet.
 
 
-# Mesures
+# Benchmarks
 
-## Conversion CSV → Parquet 
-| Format | Taille |
+## CSV to Parquet conversion
+| Format | Size |
 | --- | --- |
-| CSV | 608 Mo |
-| Parquet | 43 Mo |
+| CSV | 608 MB |
+| Parquet | 43 MB |
 
-Facteur 14. Un mois : 18 Go en CSV, 1,2 Go en Parquet.
+14x compression. One month: 18 GB as CSV, 1.2 GB as Parquet.
 
-## Agrégation DuckDB
-Comptage par jour sur 29 fichiers Parquet (~71 M de lignes) : **0,1 s** 
+## DuckDB aggregation
+Daily count across 29 Parquet files (~71 million rows): **0.1 s**

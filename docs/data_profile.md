@@ -1,23 +1,23 @@
-# Profil des données Ist-Daten 
+# Ist-Daten data profile
 
-## Source 
-- Site : opentransportdata.swiss, jeu de données "Ist-Daten v2" 
-- Un fichier CSV par jour, environ 413 Mo 
-- 1 709 145 lignes pour le 20 Septembre 2026 
-- Une ligne = le passage d'un véhicule à un arrêt 
+## Source
+- Website: opentransportdata.swiss, "Ist-Daten v2" dataset
+- One CSV file per day, approximately 413 MB
+- 1,709,145 rows for September 20, 2026
+- One row represents a vehicle passing a stop
 
-## Status des heures réelles 
-- REAL : 88,4% -> heure vraiment mesurée 
-- PROGNOSE, GESCHAETZT, UNBEKANNT : prévision ou estimation, pas une mesure 
-- Décision : on calcule le retard uniquement sur REAL 
+## Actual-time status
+- REAL: 88.4% -> actually measured time
+- PROGNOSE, GESCHAETZT, UNBEKANNT: predicted or estimated, not measured
+- Decision: delays are calculated only for REAL records
 
-## Surprises 
-- L'export de l'aperçu du site est tronqué à 1 664 000 lignes (2,6 % de perte), toujours utiliser l'URL directe 
-- L'heure prévue n'a pas de secondes, l'heure réelle en a
-- Le premier arrêt n'a pas d'arrivée, sauf chez TPG et TL 
-- Doublons d'arrêts dans certaines courses 
+## Observations
+- The website preview export is truncated at 1,664,000 rows (2.6% data loss); always use the direct URL
+- Scheduled times have no seconds, while actual times do
+- The first stop has no arrival time, except for TPG and TL
+- Some trips contain duplicate stops
 
-- Le volume varie fortement selon le jour de la semaine dimanche 20/09 = 1,7 M de lignes, lundi 21/09 = 2,5 M. Un contrôle de volume devra comparer au même jour de la semaine précédente. 
--Le site bloque le User-Agent par défaut de Python (erreur 403). Le script s'identifie avec son propre nom 
+- Volume varies substantially by day of the week: Sunday 20/09 = 1.7 million rows, Monday 21/09 = 2.5 million. Volume checks should compare against the same weekday in the previous week.
+- The website blocks Python's default User-Agent (403 error). The script identifies itself with its own name.
 
 

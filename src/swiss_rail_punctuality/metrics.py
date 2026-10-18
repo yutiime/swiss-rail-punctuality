@@ -4,15 +4,15 @@ import duckdb
 
 PROCESSED = "data/processed/*.parquet"
 OUTPUT = Path("output/punctuality.csv")
-SEUIL_S = 180
+THRESHOLD_SECONDS = 180
 
-def _query(source: str, output: Path, seuil_s: int) -> str: 
+def _query(source: str, output: Path, threshold_seconds: int) -> str:
     return f"""
 COPY (
-    WITH arrivees AS (
+    WITH arrivals AS (
         SELECT
             BETRIEBSTAG,
-            date_diff('second', strptime(ANKUNFTSZEIT, '%d.%m.%Y %H:%M'), AN_PROGNOSE) AS retard_s
+            date_diff('second', strptime(ANKUNFTSZEIT, '%d.%m.%Y %H:%M'), AN_PROGNOSE) AS delay_seconds
         FROM '{source}'
         WHERE upper(PRODUKT_ID) = 'ZUG'
           AND AN_PROGNOSE_STATUS = 'REAL'
@@ -22,9 +22,9 @@ COPY (
     SELECT
         BETRIEBSTAG,
         count(*) AS total,
-        count(*) FILTER (WHERE retard_s <= {seuil_s}) AS a_lheure,
-        count(*) FILTER (WHERE retard_s <= {seuil_s}) * 100.0 / count(*) AS pourcentage
-    FROM arrivees
+        count(*) FILTER (WHERE delay_seconds <= {threshold_seconds}) AS on_time,
+        count(*) FILTER (WHERE delay_seconds <= {threshold_seconds}) * 100.0 / count(*) AS percentage
+    FROM arrivals
     GROUP BY BETRIEBSTAG
     ORDER BY BETRIEBSTAG
 ) TO '{output}' (HEADER, DELIMITER ',')
@@ -34,10 +34,10 @@ COPY (
 def punctuality(
         source: str = PROCESSED, 
         output: Path = OUTPUT, 
-        seuil_s: int = SEUIL_S, 
+        threshold_seconds: int = THRESHOLD_SECONDS,
 ) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True) 
-    duckdb.sql(_query(source, output, seuil_s))  
+    duckdb.sql(_query(source, output, threshold_seconds))
     return output  
 
 

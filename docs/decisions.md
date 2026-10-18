@@ -1,22 +1,22 @@
-# Décisions 
+# Decisions
 
-## Téléchargement via la page du jeu de données 
-- Choix : le script lit la page HTML du jeu de données pour trouver le lien du fichier de chaque jour. 
-- Pourquoi : l'API officielle (CKAN) refuse les requêtes sans clé d'accès (403). 
-- Limite : la page ne liste que les jours récents. L'historique demandera l'archive mensuelle. Si la structure de la page change, passer une clé d'API. 
+## Downloading through the dataset page
+- Choice: the script reads the dataset's HTML page to find the file link for each day.
+- Reason: the official API (CKAN) rejects requests without an access key (403).
+- Limitation: the page lists only recent days. Historical data will require the monthly archive. If the page structure changes, switch to an API key.
 
 
 
-## Comparaison avec le chiffre officiel des CFF
+## Comparison with the official SBB figure
 
-Mon résultat : 93,56 % (septembre 2026, seuil 3 min, tous opérateurs ferroviaires)
-Chiffre CFF 2025 : 94,1 % (trafic voyageurs, seuil 3 min) — source : <https://reporting.sbb.ch/fr/ponctualite?=&years=1,4,5,6,7&scroll=0&highlighted=>
+My result: 93.56% (September 2026, 3-minute threshold, all rail operators)
+SBB's 2025 figure: 94.1% (passenger services, 3-minute threshold) — source: <https://reporting.sbb.ch/fr/ponctualite?=&years=1,4,5,6,7&scroll=0&highlighted=>
 
-Écart de 0,5 point, explicable par quatre différences de méthode :
+The 0.5 percentage-point difference can be explained by four methodological differences:
 
-| Différence | Effet probable |
+| Difference | Likely effect |
 | --- | --- |
-| Périmètre : tous les opérateurs chez moi, CFF seuls chez eux | tire mon chiffre vers le bas |
-| Période : un mois contre une année entière | écart possible dans les deux sens |
-| Les CFF publient aussi une ponctualité pondérée par le nombre de voyageurs | méthode différente de la mienne |
-| Points de mesure : tous les arrêts chez moi, périmètre inconnu chez eux | effet incertain |
+| Scope: all operators in my dataset, SBB only in theirs | pulls my figure down |
+| Period: one month versus a full year | could shift the result either way |
+| SBB also publishes punctuality weighted by passenger numbers | different methodology from mine |
+| Measurement points: all stops in my dataset, scope unknown in theirs | uncertain effect |

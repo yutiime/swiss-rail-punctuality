@@ -37,9 +37,32 @@ The result is written to `output/punctuality.csv`.
 
 ## How it works
 
-```
-download.py → transform.py → metrics.py
-(CSV from the source → Parquet → daily punctuality CSV)
+```mermaid
+flowchart LR
+    src[("opentransportdata.swiss<br/>Ist-Daten v2")]
+
+    subgraph bf["backfill.py · one day at a time"]
+        direction LR
+        dl["download.py<br/>fetch + header check"]
+        raw[/"raw CSV<br/>~600 MB"/]
+        tr["transform.py<br/>CSV → Parquet"]
+        dl --> raw --> tr
+    end
+
+    pq[("data/processed<br/>~43 MB per day")]
+    m["metrics.py<br/>DuckDB SQL"]
+    out[/"punctuality.csv<br/>% on time per day"/]
+
+    src --> dl
+    tr --> pq --> m --> out
+
+    classDef script fill:#1f6feb,stroke:#1f6feb,color:#ffffff
+    classDef data fill:#f6f8fa,stroke:#8c959f,color:#24292f
+    classDef ext fill:#fff8c5,stroke:#d4a72c,color:#24292f
+    class dl,tr,m script
+    class raw,pq,out data
+    class src ext
+    style bf fill:none,stroke:#8c959f,stroke-dasharray:5 5
 ```
 
 Download and conversion skip days already done, so a day that is already

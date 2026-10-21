@@ -1,11 +1,11 @@
 import sys
 from datetime import date, timedelta
 
-from download import download_day
-from transform import to_parquet
+from swiss_rail_punctuality.download import download_day
+from swiss_rail_punctuality.transform import to_parquet
 
 
-def backfill(start: str, end: str) -> None:
+def backfill(start: str, end: str) -> list[tuple[str, Exception]]:
     day = date.fromisoformat(start)
     last = date.fromisoformat(end)
     ok, failed = 0, []
@@ -28,8 +28,11 @@ def backfill(start: str, end: str) -> None:
     if failed:
         print(f"{len(failed)} failure(s):")
         for d, e in failed:
-            print(f"  {d}: {e}")
+            print(f"  {d}: {e}") 
+    return failed 
 
 
 if __name__ == "__main__":
-    backfill(sys.argv[1], sys.argv[2])
+    failed = backfill(sys.argv[1], sys.argv[2])
+    if failed:
+        sys.exit(1)

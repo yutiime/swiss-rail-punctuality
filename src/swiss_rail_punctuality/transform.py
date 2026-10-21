@@ -16,7 +16,7 @@ def to_parquet(day: str) -> Path:
 
     if not src.exists():
         raise FileNotFoundError(
-            f"CSV manquant : {src}. Lance d'abord download.py {day}"
+            f"CSV missing : {src}. Launch download.py {day}"
         )
 
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)

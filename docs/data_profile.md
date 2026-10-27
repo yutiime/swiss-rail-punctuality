@@ -50,3 +50,9 @@ the first exploration (the truncated export had stopped at 1,664,000).
 
 Consequence for quality checks: a day must be compared with days of the
 same type. Against the overall average, every Sunday would look ~30% short.
+
+## Publication time (observed 2026-10-26)
+
+Each daily file is published the next night at about 03:12 GMT
+(03:12:46, 03:12:01 and 03:11:37 for 23, 24 and 25 October). The time did not move with the switch to winter time on 25 October, so the source
+appears to schedule on UTC. The daily job runs at 05:37 UTC.

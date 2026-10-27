@@ -1,13 +1,14 @@
 [project]
 name = "swiss-rail-punctuality"
 version = "0.1.0"
-description = "Add your description here"
+description = "Daily train punctuality in Switzerland from open delay data"
 readme = "README.md"
 authors = [
     { name = "yutiime", email = "y.demirel467@gmail.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "azure-storage-blob>=12.31.0",
     "duckdb>=1.5.5",
 ]
 

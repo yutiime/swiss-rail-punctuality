@@ -1,7 +1,7 @@
-import os 
-from pathlib import Path 
+import os
+from pathlib import Path
 
-from azure.storage.blob import ContainerClient 
+from azure.storage.blob import ContainerClient
 
 ACCOUNT_URL = "https://swissrailyunus.blob.core.windows.net" 
 CONTAINER = "processed" 

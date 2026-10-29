@@ -1,0 +1,18 @@
+name: Daily
+
+on:
+  schedule:
+    - cron: "37 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --no-dev
+      - run: uv run python src/swiss_rail_punctuality/daily.py
+        env:
+          AZURE_SAS_TOKEN: ${{ secrets.AZURE_SAS_TOKEN }}

@@ -3,7 +3,8 @@
 ![CI](https://github.com/yutiime/swiss-rail-punctuality/actions/workflows/ci.yml/badge.svg)
 
 Daily train punctuality in Switzerland, computed from the open delay data
-on opentransportdata.swiss.
+on opentransportdata.swiss. The data is collected automatically every morning
+and stored in Azure.
 
 ## Result
 
@@ -29,46 +30,74 @@ Cancelled trains are left out.
 
 ```bash
 uv sync
-uv run python src/swiss_rail_punctuality/backfill.py 2026-09-04 2026-10-02
+uv run python src/swiss_rail_punctuality/backfill.py 2026-10-20 2026-10-26
 uv run python src/swiss_rail_punctuality/metrics.py
 ```
 
-The result is written to `output/punctuality.csv`.
+`backfill.py` collects a date range on your machine, and `metrics.py` computes
+the result from whatever days are on disk. It is written to
+`output/punctuality.csv`. The source only keeps about 50 days, so pick recent
+dates.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    src[("opentransportdata.swiss<br/>Ist-Daten v2")]
+    src[("opentransportdata.swiss<br/>published ~03:12 UTC")]
 
-    subgraph bf["backfill.py · one day at a time"]
+    subgraph day["for each missing day"]
         direction LR
         dl["download.py<br/>fetch + header check"]
-        raw[/"raw CSV<br/>~600 MB"/]
-        tr["transform.py<br/>CSV → Parquet"]
-        dl --> raw --> tr
+        tr["transform.py<br/>CSV → Parquet<br/>+ row-count check"]
+        dl --> tr
     end
 
-    pq[("data/processed<br/>~43 MB per day")]
+    gh(["GitHub Actions<br/>daily.py · 05:37 UTC"])
+    me(["local<br/>backfill.py"])
+    az[("Azure ADLS Gen2<br/>processed/")]
+    pq[("data/processed")]
     m["metrics.py<br/>DuckDB SQL"]
     out[/"punctuality.csv<br/>% on time per day"/]
 
     src --> dl
-    tr --> pq --> m --> out
+    gh -. runs .-> day
+    me -. runs .-> day
+    tr -- "daily: upload" --> az
+    tr -- "backfill: keep" --> pq
+    pq --> m --> out
 
     classDef script fill:#1f6feb,stroke:#1f6feb,color:#ffffff
     classDef data fill:#f6f8fa,stroke:#8c959f,color:#24292f
     classDef ext fill:#fff8c5,stroke:#d4a72c,color:#24292f
-    class dl,tr,m script
-    class raw,pq,out data
+    class dl,tr,m,gh,me script
+    class pq,out,az data
     class src ext
-    style bf fill:none,stroke:#8c959f,stroke-dasharray:5 5
+    style day fill:none,stroke:#8c959f,stroke-dasharray:5 5
 ```
 
-Download and conversion skip days already done, so a day that is already
-downloaded or converted gets passed over. `backfill.py` chains these two
-steps over a date range. If a single day fails it keeps going and lists the
-failures at the end.
+Every day goes through the same steps: download the CSV, convert it to
+Parquet, count its rows, and only then give the file its final name. A day
+with far fewer rows than usual for its day of the week is rejected, so a bad
+file is never mistaken for a finished one.
+
+Two scripts drive these steps:
+
+- `daily.py` runs on GitHub Actions every morning. It looks at the last 7
+  days, skips the ones already in Azure and uploads the rest, so a missed run
+  is caught up the next morning.
+- `backfill.py` is the manual tool: any date range, files kept on the local
+  disk.
+
+A day that fails does not stop the others, but the run still ends in error.
+GitHub then marks it red and sends me an email.
+
+### Why GitHub Actions and Azure
+
+The source deletes its files after about 50 days, so collection cannot depend
+on my macbook being on. GitHub Actions is free for a public repository and
+already runs the CI. The machine it lends is wiped after each run, so the
+files live in Azure Blob Storage, which is also where the job checks what is
+already done.
 
 ### Why Parquet
 
@@ -86,12 +115,17 @@ data to load first. Aggregating 29 files (~71M rows) takes 0.1 s.
 
 ## Known limits
 
-- Only 29 days of data. The source's CKAN API returns 403 without a key, so
-  the download parses the dataset's HTML page instead, and that page only
-  lists recent days. Going further back would need the monthly archive, which
-  works differently.
-- For the same reason, the reproduce commands will stop working once those
-  dates fall off the page.
+- History starts on 1 September 2026. The source's CKAN API returns 403
+  without a key, so the download reads the dataset's HTML page, which only
+  lists recent days. Going further back would need the monthly archive.
+- The result above still covers the first 29 days. `metrics.py` reads local
+  files only and is not part of the daily job yet.
+- GitHub does not guarantee the start time of scheduled runs, and disables
+  them after 60 days without activity on the repository.
+- The row-count check only catches large losses, and weekday public holidays
+  will trigger false alarms.
+- The SAS token used by the job expires on 26 January 2027 and has to be
+  renewed by hand.
 - The on-time threshold and the output paths are parameters of
   `punctuality()`. Everything else is hardcoded.
 

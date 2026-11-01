@@ -1,17 +1,20 @@
 # Ist-Daten data profile
 
 ## Source
+
 - Website: opentransportdata.swiss, "Ist-Daten v2" dataset
 - One CSV file per day, approximately 413 MB on a Sunday, ~600 MB on a weekday 
 - 1,709,145 rows for September 20, 2026
 - One row represents a vehicle passing a stop
 
 ## Actual-time status
+
 - REAL: 88.4% -> actually measured time
 - PROGNOSE, GESCHAETZT, UNBEKANNT: predicted or estimated, not measured
 - Decision: delays are calculated only for REAL records
 
 ## Observations
+
 - The website preview export is truncated at 1,664,000 rows (2.6% data loss); always use the direct URL
 - Scheduled times have no seconds, while actual times do
 - The first stop has no arrival time, except for TPG and TL
@@ -56,3 +59,18 @@ same type. Against the overall average, every Sunday would look ~30% short.
 Each daily file is published the next night at about 03:12 GMT
 (03:12:46, 03:12:01 and 03:11:37 for 23, 24 and 25 October). The time did not move with the switch to winter time on 25 October, so the source
 appears to schedule on UTC. The daily job runs at 05:37 UTC.
+
+## Dataset change and late publication (observed 2026-11-01)
+
+Around 31 October the dataset ID in the file URLs changed
+(`febff1f3-…` became `2091d9b2-…`), which suggests the source recreated the
+dataset. The page then listed only 12 days (20–31 October) instead of 50.
+
+The daily runs of 31 October and 1 November failed with "No file found".
+The files for 30 and 31 October were only put online on 1 November at
+13:25 and 13:27 UTC, after both runs, instead of the usual 03:12 UTC.
+The job reported the failure and left nothing incomplete in storage.
+
+The download was not affected by the new ID, because it matches file names
+rather than the dataset ID. The retention of the new dataset is unknown and
+needs to be measured again.

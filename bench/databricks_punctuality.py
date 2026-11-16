@@ -3,7 +3,10 @@ import statistics
 import time
 from datetime import date, timedelta
 
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
+
+spark = SparkSession.builder.getOrCreate()
 
 spark.conf.set("spark.sql.session.timeZone", "UTC")
 
